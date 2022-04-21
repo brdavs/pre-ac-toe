@@ -37,3 +37,4 @@ body {
   color: white;
   background-color: red;
 }
+.github-fork-ribbon:before { background-color: #673AB8; }

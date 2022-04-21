@@ -85,6 +85,11 @@ export default function App({ xsize, length }) {
   return html`
     <img src="https://preactjs.com/assets/app-icon.png" width="50" alt="Preact logo"/>
     <h1>PRE AC TOE</h1>
+    <p>
+      The game takes 2 parameters in URL:<br/>
+      <b>xsize</b> - (number of fields on axis) and <b>length</b> - (number of consecutive fields needed to win).<br/>
+      Try <a href="/?xsize=12&length=4">this board size</a> for a more complex game.
+    </p>
     ${!winner
       ? html`<h2>Next player: ${player}</h2>`
       : html`<h2>Winner is player ${winner}</h2>`}
@@ -113,5 +118,6 @@ export default function App({ xsize, length }) {
                 `
           )}
     </ul>
+    <a class="github-fork-ribbon" href="https://github.com/brdavs/pre-ac-toe" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
   `;
 }
