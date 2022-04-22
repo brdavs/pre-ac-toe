@@ -25,6 +25,7 @@ export default function App({ xsize, length }) {
     square: {
       gridTemplateColumns: `repeat(${xsize}, 1fr)`,
     },
+    font: { fontSize: `calc(calc(10vw + 10vh) / ${xsize})`}
   };
 
   const getRange = (pos) => {
@@ -98,7 +99,7 @@ export default function App({ xsize, length }) {
         .flat()
         .map(
           (el) => html`
-            <div id="s${el.id}" class=${'square ' + el.class} onclick=${handleClick(el)}>
+            <div id="s${el.id}" class=${'square ' + el.class} style=${{ ...style.font }} onclick=${handleClick(el)}>
               ${el.val}
             </div>
           `

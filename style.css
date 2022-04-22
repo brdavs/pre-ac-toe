@@ -1,15 +1,14 @@
 body {
   text-align: center;
 }
+
 .tictactoe {
   max-width: 40em;
-  /* max-height: 30em; */
   display: grid;
   /* grid-template-columns: 1fr 1fr 1fr 1fr; */ /* This happens inline */
   grid-gap: 1px;
   background-color: darkgrey;
   margin: 0 auto;
-
   animation: fadeIn linear 1s;
 }
 @keyframes fadeIn {
@@ -28,13 +27,16 @@ body {
   aspect-ratio: 1;
   user-select: none;
 }
+
 .historyList {
   width: 20em;
   margin: 0 auto;
   text-align: left;
 }
+
 .win {
   color: white;
   background-color: red;
 }
+
 .github-fork-ribbon:before { background-color: #673AB8; }
