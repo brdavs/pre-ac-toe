@@ -52,10 +52,10 @@ export default function App({ xsize, length }) {
     const yRange = getRange(yPos);
     const shortest = Math.min(xRange.length, yRange.length);
     // Horizontal
-    items = xRange.map((xD) => matrix[yPos][xD]);
+    items = xRange.map((x) => matrix[yPos][x]);
     if(checkRange(items, combo)) return
     // vertical
-    items = yRange.map((yD) => matrix[yD][xPos]);
+    items = yRange.map((y) => matrix[y][xPos]);
     if(checkRange(items, combo)) return
     // diagonal 1
     items = ar(shortest).map((d, i) => matrix[yRange[i]][xRange[i]]);
