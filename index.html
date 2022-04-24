@@ -12,7 +12,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const xsize = parseInt(urlParams.get('xsize')) || 3
       const length = parseInt(urlParams.get('length')) || 3
-      console.log(urlParams.get('xsize')+urlParams.get('xsize'))
       render(html`<${App} xsize=${xsize} length=${length}/>`, document.body);
     </script>
   </head>

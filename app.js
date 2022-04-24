@@ -14,7 +14,7 @@ export default function App({ xsize, length }) {
         yPos: i,
         xPos: ii,
         val: null,
-        class: ''
+        class: "",
       }))
     )
   );
@@ -25,45 +25,71 @@ export default function App({ xsize, length }) {
     square: {
       gridTemplateColumns: `repeat(${xsize}, 1fr)`,
     },
-    font: { fontSize: `calc(calc(10vw + 10vh) / ${xsize})`}
-  };
-
-  const getRange = (pos) => {
-    const min = Math.max(0, pos - length + 1);
-    const max = Math.min(pos + length, xsize);
-    return Array.from({ length: max - min }, (v, k) => k + min);
+    font: { fontSize: `calc(calc(10vw + 10vh) / ${xsize})` },
   };
 
   const checkRange = (items, combo) => {
-    const itemsValues = items.map(item => item.val)
+    const itemsValues = items.map((item) => item.val);
     if (itemsValues.join().includes(combo.join())) {
-      const index = itemsValues.join().indexOf(combo.join())
-      ar(length).forEach((d,i) => items[i+index].class='win')
+      const index = itemsValues.join().indexOf(combo.join());
+      ar(length).forEach((d, i) => (items[i + index].class = "win"));
       setWinner(player);
-      return true
+      return true;
     }
-  }
+  };
+  const between = (val) => val > 0 && val < xsize;
+  const getItems = ({ xPos, yPos, d }) => {
+    let result = [];
+    let xStart, xEnd, yStart, yEnd;
+    xStart = xEnd = xPos;
+    yStart = yEnd = yPos;
+    for (var l = length - 1; l > 0; l--) {
+      if (between(xStart) && between(yStart)) {
+        xStart--;
+        yStart--;
+      }
+    }
+    for (var l = length - 1; l > 0; l--) {
+      if (between(xEnd + 1) && between(yEnd + 1)) {
+        xEnd++;
+        yEnd++;
+      }
+    }
+    for (let n = 0; n <= xEnd - xStart; n++) {
+      switch (d) {
+        case "v":
+          result.push(matrix[yStart + n][xPos]);
+          break;
+        case "h":
+          result.push(matrix[yPos][xStart + n]);
+          break;
+        case "l":
+          result.push(matrix[yStart + n][xStart + n]);
+          break;
+        case "r":
+          result.push(matrix[yStart + n][xEnd - n]);
+          break;
+      }
+    }
+    return result;
+  };
 
   const hasWon = (el) => {
-    let items, itemsValues;
+    let items;
     const combo = ar(length).map(() => player);
     const { xPos, yPos } = el;
-    const xRange = getRange(xPos);
-    const yRange = getRange(yPos);
-    const shortest = Math.min(xRange.length, yRange.length);
-    // Horizontal
-    items = xRange.map((x) => matrix[yPos][x]);
-    if(checkRange(items, combo)) return
-    // vertical
-    items = yRange.map((y) => matrix[y][xPos]);
-    if(checkRange(items, combo)) return
-    // diagonal 1
-    items = ar(shortest).map((d, i) => matrix[yRange[i]][xRange[i]]);
-    if(checkRange(items, combo)) return
-    // diagonal 2
-    xRange.reverse().splice(yRange.length);
-    items = ar(shortest).map((d, i) => matrix[yRange[i]][xRange[i]]);
-    if(checkRange(items, combo)) return
+    // // Horizontal
+    items = getItems({ xPos, yPos, d: "h" })
+    if (checkRange(items, combo)) return;
+    // // vertical
+    items = getItems({ xPos, yPos, d: "v" })
+    if (checkRange(items, combo)) return;
+    // diagonal from left
+    items = getItems({ xPos, yPos, d: "l" })
+    if (checkRange(items, combo)) return;
+    // // diagonal from right
+    items = getItems({ xPos, yPos, d: "r" })
+    if (checkRange(items, combo)) return;
   };
 
   const handleClick = (el) => (e) => {
@@ -84,12 +110,18 @@ export default function App({ xsize, length }) {
   };
 
   return html`
-    <img src="https://preactjs.com/assets/app-icon.png" width="50" alt="Preact logo"/>
+    <img
+      src="https://preactjs.com/assets/app-icon.png"
+      width="50"
+      alt="Preact logo"
+    />
     <h1>PRE AC TOE</h1>
     <p>
-      The game takes 2 parameters in URL:<br/>
-      <b>xsize</b> - (number of fields on axis) and <b>length</b> - (number of consecutive fields needed to win).<br/>
-      Try <a href="/?xsize=12&length=4">this board size</a> for a more complex game.
+      The game takes 2 parameters in URL:<br />
+      <b>xsize</b> - (number of fields on axis) and <b>length</b> - (number of
+      consecutive fields needed to win).<br />
+      Try <a href="/?xsize=10&length=4">this board size</a> for a more complex
+      game.
     </p>
     ${!winner
       ? html`<h2>Next player: ${player}</h2>`
@@ -99,7 +131,12 @@ export default function App({ xsize, length }) {
         .flat()
         .map(
           (el) => html`
-            <div id="s${el.id}" class=${'square ' + el.class} style=${{ ...style.font }} onclick=${handleClick(el)}>
+            <div
+              id="s${el.id}"
+              class=${"square " + el.class}
+              style=${{ ...style.font }}
+              onclick=${handleClick(el)}
+            >
               ${el.val}
             </div>
           `
@@ -119,6 +156,12 @@ export default function App({ xsize, length }) {
                 `
           )}
     </ul>
-    <a class="github-fork-ribbon" href="https://github.com/brdavs/pre-ac-toe" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+    <a
+      class="github-fork-ribbon"
+      href="https://github.com/brdavs/pre-ac-toe"
+      data-ribbon="Fork me on GitHub"
+      title="Fork me on GitHub"
+      >Fork me on GitHub</a
+    >
   `;
 }
