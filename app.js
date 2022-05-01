@@ -37,39 +37,57 @@ export default function App({ xsize, length }) {
       return true;
     }
   };
-  const between = (val) => val > 0 && val < xsize;
-  const getItems = ({ xPos, yPos, d }) => {
+
+  const perpendicular = ({ xPos, yPos, d }) => {
     let result = [];
     let xStart, xEnd, yStart, yEnd;
     xStart = xEnd = xPos;
     yStart = yEnd = yPos;
     for (var l = length - 1; l > 0; l--) {
-      if (between(xStart) && between(yStart)) {
-        xStart--;
-        yStart--;
-      }
+      if (d == "h") if (xStart > 0) xStart--;
+      if (d == "h") if (xEnd < xsize - 1) xEnd++;
+      if (d == "v") if (yStart > 0) yStart--;
+      if (d == "v") if (yEnd < xsize - 1) yEnd++;
     }
+    const range = d == "h" ? xEnd - xStart : yEnd - yStart;
+    for (let n = 0; n <= Math.abs(range); n++) {
+      if (d == "h") result.push(matrix[yPos][xStart + n]);
+      if (d == "v") result.push(matrix[yStart + n][xPos]);
+    }
+    return result;
+  };
+
+  const diagonal = ({ xPos, yPos, d }) => {
+    let result = [];
+    let xStart, xEnd, yStart, yEnd;
+    xStart = xEnd = xPos;
+    yStart = yEnd = yPos;
     for (var l = length - 1; l > 0; l--) {
-      if (between(xEnd + 1) && between(yEnd + 1)) {
-        xEnd++;
-        yEnd++;
+      if (d == "l") {
+        if (xStart > 0 && yStart > 0) {
+          xStart--;
+          yStart--;
+        }
+        if (xEnd < xsize - 1 && yEnd < xsize - 1) {
+          xEnd++;
+          yEnd++;
+        }
+      }
+      if (d == "r") {
+        if (xStart > 0 && yStart < xsize - 1) {
+          xStart--;
+          yStart++;
+        }
+        if (xEnd < xsize - 1 && yEnd > 0) {
+          xEnd++;
+          yEnd--;
+        }
       }
     }
-    for (let n = 0; n <= xEnd - xStart; n++) {
-      switch (d) {
-        case "v":
-          result.push(matrix[yStart + n][xPos]);
-          break;
-        case "h":
-          result.push(matrix[yPos][xStart + n]);
-          break;
-        case "l":
-          result.push(matrix[yStart + n][xStart + n]);
-          break;
-        case "r":
-          result.push(matrix[yStart + n][xEnd - n]);
-          break;
-      }
+    const range = d == "l" ? xEnd - xStart : yStart - yEnd;
+    for (let n = 0; n <= Math.abs(range); n++) {
+      if (d == "l") result.push(matrix[yStart + n][xStart + n]);
+      if (d == "r") result.push(matrix[yStart - n][xStart + n]);
     }
     return result;
   };
@@ -78,17 +96,17 @@ export default function App({ xsize, length }) {
     let items;
     const combo = ar(length).map(() => player);
     const { xPos, yPos } = el;
-    // // Horizontal
-    items = getItems({ xPos, yPos, d: "h" })
+    // Horizontal
+    items = perpendicular({ xPos, yPos, d: "h" });
     if (checkRange(items, combo)) return;
-    // // vertical
-    items = getItems({ xPos, yPos, d: "v" })
+    // vertical
+    items = perpendicular({ xPos, yPos, d: "v" });
     if (checkRange(items, combo)) return;
     // diagonal from left
-    items = getItems({ xPos, yPos, d: "l" })
+    items = diagonal({ xPos, yPos, d: "l" });
     if (checkRange(items, combo)) return;
-    // // diagonal from right
-    items = getItems({ xPos, yPos, d: "r" })
+    // diagonal from right
+    items = diagonal({ xPos, yPos, d: "r" });
     if (checkRange(items, combo)) return;
   };
 
